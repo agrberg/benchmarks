@@ -15,6 +15,7 @@ end
 
 benchmark_lambda = lambda do |x|
   TIMES.each do |i|
+    # Faster
     x.report("unpack #{i}") do
       strings[i].each {|str| str.unpack('m*'.freeze).first }
     end

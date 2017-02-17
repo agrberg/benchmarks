@@ -13,6 +13,7 @@ benchmark_lambda = lambda do |x|
       num.times.collect { chars.sample }.join
     end
 
+    # Faster
     x.report("Array.new(#{num})") do
       Array.new(num) { chars.sample }.join
     end
