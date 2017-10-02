@@ -1,3 +1,4 @@
+#!/usr/bin/env ruby
 require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
