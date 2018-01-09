@@ -2,22 +2,24 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
-TIMES = [1, 16, 100, 1_000, 10_000]
-
 benchmark_lambda = lambda do |x|
-  x.report("%w[]") do
+  x.report("%w[]") do # same as [...] mostly
     %w[one two three]
   end
 
-  x.report("manual array") do
+  x.report("manual array") do # same as %w[] mostly
     ['one', 'two', 'three']
   end
 
-  x.report("manual array freeze") do
+  x.report("manual array freeze") do # fastest over many iterations
     ['one'.freeze, 'two'.freeze, 'three'.freeze]
   end
-  # uncomment if you want comparisons between them all
-  # x.compare!
+
+  x.report("manual array map freeze") do # useless
+    ['one', 'two', 'three'].map(&:freeze)
+  end
+
+  x.compare!
 end
 
 Benchmark.ips(&benchmark_lambda); nil
