@@ -2,6 +2,7 @@
 require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
+require 'active_support/core_ext/time'
 
 benchmark_lambda = lambda do |x|
   twenty_five_hours = 90_000
