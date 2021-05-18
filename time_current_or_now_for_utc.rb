@@ -5,8 +5,7 @@ require 'benchmark/ips'
 require 'active_support/core_ext/time'
 
 benchmark_lambda = lambda do |x|
-  twenty_five_hours = 90_000
-  x.report("now") do # 700% FASTER O_o
+  x.report("now") do # 30% faster Ruby 3.0.1 Rails 6.1
     Time.now.utc
   end
 
