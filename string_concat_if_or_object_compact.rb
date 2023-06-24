@@ -42,8 +42,17 @@ benchmark_lambda = lambda do |x|
   #   {str1: str1_nil, str2: str2_nil, str3: str3_nil}.compact.map { |k, v| "#{k.to_s.humanize}: #{v}" }.join("")
   # end
 
+  # this is the only case where `hash` is faster than `reduce`
   x.report("all present - hash") do
     {str1: str1, str2: str2, str3: str3}.compact.map { |k, v| "#{k.to_s.humanize}: #{v}" }.join("")
+  end
+
+  x.report("all present - hash - explicit") do
+    {"Str1" => str1, "Str2" => str2, "Str3" => str3}.compact.map { |k, v| "#{k}: #{v}" }.join("")
+  end
+
+  x.report("all present - hash - no AS::I") do
+    {str1: str1, str2: str2, str3: str3}.compact.map { |k, v| "#{k.to_s.capitalize.tr("_", " ")}: #{v}" }.join("")
   end
 
   # x.report("half present - hash") do
@@ -58,11 +67,31 @@ benchmark_lambda = lambda do |x|
   #   end
   # end
 
+  # without ActiveSupport::Inflector (which also brings in `#present?`) `reduce` is faster than `hash` for all present cases
+  # and only 2.33x slower than string concat
   x.report("all present - reduce") do
     {str1: str1, str2: str2, str3: str3}.reduce("") do |output, (k, v)|
       next output unless v.present?
 
-      output << "#{k.to_s.humanize}: #{v}\n"
+      output << "#{k.to_s.humanize}: #{v}"
+    end
+  end
+
+  # explicit string preformated keys cut 2x off the time w/o AS methods for a total of 10x faster
+  x.report("all present - reduce - explicit") do
+    {"Str1" => str1, "Str2" => str2, "Str3" => str3}.reduce("") do |output, (k, v)|
+      next output unless v
+
+      output << "#{k}: #{v}"
+    end
+  end
+
+  # AS::I methods add about 5x to the time
+  x.report("all present - reduce - no AS::I") do
+    {str1: str1, str2: str2, str3: str3}.reduce("") do |output, (k, v)|
+      next output unless v
+
+      output << "#{k.to_s.capitalize.tr("_", " ")}: #{v}"
     end
   end
 
