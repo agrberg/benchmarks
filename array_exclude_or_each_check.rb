@@ -3,8 +3,8 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
-# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: "check is always faster" now breaks at 256 (next-if-middle drops below Array#-); "worst is always fastest" no longer holds -- flips across sizes
-TIMES = [4, 16, 64, 256]
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: densified TIMES to localize the "breaks at 256" claim -- CORRECTION: that didn't hold. next-if still clearly wins at 128 and 256 too; the only crack is at 512, where Array#-[best] edges past next-if[worst] specifically (next-if[best]/[middle] still lead overall). "worst is always fastest" still doesn't hold -- flips across sizes with no stable pattern.
+TIMES = [4, 16, 64, 128, 256, 512]
 
 benchmark_lambda = lambda do |x|
   TIMES.each do |i|
@@ -25,7 +25,7 @@ benchmark_lambda = lambda do |x|
       (items - [item_to_exclude_worst_case]).each { |item| item.to_s }
     end
 
-    # RESULT - v Fastest: doing the check is faster for every size except 256, where next-if-middle falls behind Array#- (gap collapses into noise)
+    # RESULT - v Fastest: doing the check is faster through 256; only at 512 does one Array#- variant (best-case) edge past one next-if variant (worst-case)
 
     x.report("next if [best] - #{i}") do
       items.each do |item|
@@ -41,7 +41,7 @@ benchmark_lambda = lambda do |x|
       end
     end
 
-    # no longer a reliable pattern -- fastest position flips across sizes (best@4, worst@16, middle@64, best@256), looks like noise
+    # no longer a reliable pattern -- fastest position flips across sizes (best@4, worst@16, best@64, middle@128, ~3-way tie@256), looks like noise
     x.report("next if [worst] - #{i}") do
       items.each do |item|
         next if item == item_to_exclude_worst_case

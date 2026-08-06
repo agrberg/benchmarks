@@ -3,7 +3,11 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
-TIMES = [1, 16, 100, 1_000, 10_000]
+# Runtime ≈ reports_per_size × len(TIMES) × 7s at benchmark-ips defaults (2s warmup + 5s calc).
+# For a *grid* sweep (TIMES.each nested inside TIMES.each), it's squared: × len(TIMES)^2 × 7s.
+# Bias points toward the low end if you're hunting a crossover -- most of this repo's real
+# crossovers landed below 100, and a low-N report is cheap regardless of how many you add.
+TIMES = [1, 4, 16, 100, 1_000, 10_000]
 
 benchmark_lambda = lambda do |x|
   TIMES.each do |i|
