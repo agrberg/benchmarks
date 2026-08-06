@@ -50,12 +50,13 @@ struct.email = EMAIL
 
 struct_ordered = PersonStruct.new(NAME, EMAIL)
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1 (fresh reading, not a re-verification): no single overall winner -- Hash is fastest to init, Struct is fastest to access; OpenStruct is dramatically slowest at both
 benchmark_lambda = lambda do |x|
-  x.report("hash:init:") do
+  x.report("hash:init:") do # fastest init overall
       p = {name: NAME, email: EMAIL}
   end
 
-  x.report("openstruct:init:") do
+  x.report("openstruct:init:") do # dramatically slowest init (~78x slower than hash)
       p = OpenStruct.new
       p.name = NAME
       p.email = EMAIL
@@ -90,17 +91,17 @@ benchmark_lambda = lambda do |x|
       hash[:email]
   end
 
-  x.report("openstruct:access:") do
+  x.report("openstruct:access:") do # slowest access too, though only ~1.5x behind the rest (less dramatic than init)
       ostruct.name
       ostruct.email
   end
 
-  x.report("struct:access:") do
+  x.report("struct:access:") do # fastest access, narrowly ahead of class/hash (which are roughly tied)
       struct.name
       struct.email
   end
 
-  x.report("struct_ordered:access:") do
+  x.report("struct_ordered:access:") do # tied with struct:access for fastest
       struct_ordered.name
       struct_ordered.email
   end

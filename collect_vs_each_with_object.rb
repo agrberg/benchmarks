@@ -3,19 +3,20 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: "collect" is only fastest at 1 item; "compact" variant overtakes it from 16+
 TIMES = [1, 16, 100, 1_000, 10_000]
 
 benchmark_lambda = lambda do |x|
   TIMES.each do |i|
     array = Array.new(i) { |num| num }
 
-    x.report("collect - #{i}") do # fastest over all
+    x.report("collect - #{i}") do # fastest at 1 item only; overtaken by compact variant from 16+
       array.collect do |item|
         item.to_s
       end
     end
 
-    x.report("collect w/ skips + compact - #{i}") do # faster than each w/ obj + skipping
+    x.report("collect w/ skips + compact - #{i}") do # faster than each w/ obj + skipping; also fastest overall from 16+ items
       array.collect do |item|
         next if item.odd?
 

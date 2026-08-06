@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1 (fresh reading, not a re-verification): no clean winner between `+` and `[i, *ary]` -- it trades off by array size; the hardcoded literal array is still ~2x faster than building from a range
 TIMES = [1, 16, 100, 1_000, 10_000]
 
 benchmark_lambda = lambda do |x|
@@ -18,7 +19,7 @@ benchmark_lambda = lambda do |x|
     Array('0'..'9') + Array('A'..'Z') + Array('a'..'z')
   end
 
-  x.report("creating the array `['a', 'b', ... 'z']`") do
+  x.report("creating the array `['a', 'b', ... 'z']`") do # ~2x faster than the range-built variants above, which are all roughly tied
     ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"] +
       ["A", "B", "C", "D", "E", "F", "G", "H", "I", "J", "K", "L", "M", "N", "O", "P", "Q", "R", "S", "T", "U", "V", "W", "X", "Y", "Z"] +
       ["a", "b", "c", "d", "e", "f", "g", "h", "i", "j", "k", "l", "m", "n", "o", "p", "q", "r", "s", "t", "u", "v", "w", "x", "y", "z"]
@@ -27,6 +28,7 @@ benchmark_lambda = lambda do |x|
   TIMES.each do |num_times|
     existing_array = (0..num_times).to_a
 
+    # no consistent winner vs `[i, *ary]` -- flips by size (splat wins at 1, `+` wins at 16/100, splat edges ahead again at 1000/10000, mostly within noise)
     x.report("`+` 1 element to an array of #{num_times}") do
       [1] + existing_array
     end

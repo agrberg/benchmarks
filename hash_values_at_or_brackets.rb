@@ -7,6 +7,7 @@ hash_2 = {one: 1, two: 2}
 hash_6 = {one: 1, two: 2, three: 3, four: 4, five: 5, six: 6}
 hash_10 = {one: 1, two: 2, three: 3, four: 4, five: 5, six: 6, seven: 7, eight: 8, nine: 9, ten: 10}
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: unchanged, [] still faster at 2 and 6, values_at still faster at 10.
 benchmark_lambda = lambda do |x|
   x.report('values_at - 2') { hash_2.values_at(:one, :two) }
   x.report('[] - 2') { [hash_2[:one], hash_2[:two]] } # Faster

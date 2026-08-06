@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: ranking holds
 TIMES = [1, 16, 100, 1_000, 10_000]
 
 is_even_proc = -> (v) { v % 2 == 0 }

@@ -60,12 +60,13 @@ params_without_match = {
   ten: 'ten'
 }
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: caveat re-confirmed — regex vs strings-only is still within the margin of error (tagged same-ish); improvement over original filters is now ~17% (previously described as 20+%).
 benchmark_lambda = lambda do |x|
   x.report("original filters") do
     original.filter(params_without_match)
   end
 
-  # Reduced filters provide a 20+% improvement in performance. Using a regex or not is in the margin of error.
+  # Reduced filters provide a ~17% improvement in performance. Using a regex or not is still in the margin of error.
   x.report("reduced filters with regex") do
     reduced_regex.filter(params_without_match)
   end

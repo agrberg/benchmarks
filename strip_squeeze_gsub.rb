@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: strip/squeeze still both far ahead of all gsub variants at every size; size=16 run was unusually noisy (±Inf% error bars) so its same-ish tags there are unreliable
 REGEXP_MAP = {
   'gsub \\s+'    => /\s+/,    # https://regexper.com/#%2F%5Cs%2B%2F <= more permissive but sometimes faster
   'gsub {2,}'    => /\s{2,}/, # https://regexper.com/#%2F%5Cs%7B2%2C%7D%2F
