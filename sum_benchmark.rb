@@ -2,6 +2,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: sum still dominates for num>=1 (tied with manual only at num=0); manual still fastest of the non-sum approaches at every size
 TIMES = [0, 1, 2, 16, 100, 1_000, 10_000]
 
 benchmark_lambda = lambda do |x|

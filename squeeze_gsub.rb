@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: squeeze-family still fastest and gsub-family still slowest at every size (2-32); at size 4 squeeze/strip-and-squeeze/squeeze-and-strip are now a same-ish 3-way tie
 REGEXP = /\s+/
 STRINGS = 5.times.collect do |i|
   num_spaces = 2 ** (i + 1)

@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: direct comparison still faster than Array#include? at every size 1-5 (no crossover found)
 benchmark_lambda = lambda do |x|
   # Directly comparing the values is always faster than using Array#include? as the creation of the array is not free
 

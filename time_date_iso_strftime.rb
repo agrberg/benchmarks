@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 require 'date_core'
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: ranking unchanged (to_date.iso8601 fastest, to_date.strftime long/short next and nearly tied, plain strftime long/short slowest)
 
 time = Time.new(2020, 1, 1, 9, 30, 0)
 

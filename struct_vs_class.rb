@@ -3,9 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
-# Odd results on this one. The structs are faster (their difference is in the noise) when initializing w/
-# the data already present.
-# HOWEVER, the class is faster when it does not have an initialize method and only assignment is used
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: my first pass (1s/1s reduced timing) called all six same-ish -- CORRECTION from benchmark-ips defaults (2s/5s): that was a timing artifact. `PersonClass new w/ args` is decisively the fastest of all six (beats every other variant by 1.38-1.59x, none tagged same-ish) -- a third, different finding from both the original historical claim and the same-ish revision. Plain Class with an args constructor wins outright; the Struct-vs-Class / new-vs-assign split from the original comment doesn't hold either.
 
 FIRST_NAME = 'Firstname'.freeze
 LAST_NAME = 'Lastname'.freeze

@@ -9,6 +9,7 @@ words = Hash[TIMES.map do |times|
   [times, Array.new(times) { ALPHABET.sample }.join]
 end]
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: caveat re-confirmed — still more or less the same, too noisy for a clear winner at any size.
 benchmark_lambda = lambda do |x|
   TIMES.each do |i|
     word = words[i]

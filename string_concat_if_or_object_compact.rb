@@ -2,7 +2,11 @@
 require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
+require 'active_support'
 require 'active_support/inflector'
+require 'active_support/core_ext/object/blank' # inflector no longer pulls this in transitively (see note below)
+
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: previously relied on inflector transitively loading #present? (no longer true in AS 8) — now explicit require added, fixed and running. Ratios shifted: string now ~13x faster than reduce/hash (was ~23x), hash vs reduce now roughly tied (was hash winning), AS::I overhead ~3.4x (was ~5x), explicit-key reduce ~7x faster than full reduce (was ~10x)
 
 # "all missing" is overall the fastest for each case
 # "all present" is overall the second fastest for each case
@@ -22,7 +26,7 @@ benchmark_lambda = lambda do |x|
   #   output << "Str3: #{str3}" if str3_nil
   # end
 
-  # ~23x faster for worst case (full) present cases
+  # ~13x faster for worst case (full) present cases
   # hash and reduce are about the same
   x.report("all present - string") do
     output = ""
@@ -42,7 +46,7 @@ benchmark_lambda = lambda do |x|
   #   {str1: str1_nil, str2: str2_nil, str3: str3_nil}.compact.map { |k, v| "#{k.to_s.humanize}: #{v}" }.join("")
   # end
 
-  # this is the only case where `hash` is faster than `reduce`
+  # hash and reduce are now roughly tied here (hash no longer clearly faster)
   x.report("all present - hash") do
     {str1: str1, str2: str2, str3: str3}.compact.map { |k, v| "#{k.to_s.humanize}: #{v}" }.join("")
   end
@@ -77,7 +81,7 @@ benchmark_lambda = lambda do |x|
     end
   end
 
-  # explicit string preformated keys cut 2x off the time w/o AS methods for a total of 10x faster
+  # explicit string preformated keys cut ~2x off the time w/o AS methods for a total of ~7x faster
   x.report("all present - reduce - explicit") do
     {"Str1" => str1, "Str2" => str2, "Str3" => str3}.reduce("") do |output, (k, v)|
       next output unless v
@@ -86,7 +90,7 @@ benchmark_lambda = lambda do |x|
     end
   end
 
-  # AS::I methods add about 5x to the time
+  # AS::I methods add about 3.4x to the time
   x.report("all present - reduce - no AS::I") do
     {str1: str1, str2: str2, str3: str3}.reduce("") do |output, (k, v)|
       next output unless v

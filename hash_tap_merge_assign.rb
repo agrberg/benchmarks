@@ -5,6 +5,7 @@ require 'benchmark/ips'
 
 TIMES = [1, 16, 100, 1_000, 10_000]
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: unchanged, .merge is still fastest at every size tested.
 benchmark_lambda = lambda do |x|
   TIMES.each do |i|
     assignments = {code: [], hash: []}

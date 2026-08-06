@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: ranking holds -- post sort fastest, pre sort slowest at every size
 TIMES = [4, 16, 100, 1_000, 10_000]
 
 benchmark_lambda = lambda do |x|

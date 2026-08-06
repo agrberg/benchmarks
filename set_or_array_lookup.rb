@@ -4,6 +4,7 @@ require 'benchmark'
 require 'benchmark/ips'
 require 'set'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), benchmark-ips 2.15.1: crossover holds, still ~4 elements.
 TIMES = (1..5).to_a
 
 benchmark_lambda = lambda do |x|

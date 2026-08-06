@@ -5,6 +5,7 @@ require 'benchmark/ips'
 # Make sure you `gem install unique_permutations` - https://github.com/agrberg/unique_permutation
 require 'unique_permutation'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: unchanged, crossover still at 8 items w/ 4 duplicates.
 TIMES = 1..10 # unique is faster at 8 items w/ 4 duplicates
 
 benchmark_lambda = lambda do |x|

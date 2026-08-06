@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: multi-regime finding CONFIRMED at benchmark-ips defaults (2s/5s) — `<<` genuinely wins short-base+short-append, interpolation genuinely wins when the appended string is large relative to the base, `join` is consistently slowest. One correction: at 100+100, plain interpolation wins outright (not "interp + <<" as my first pass claimed).
 TIMES = [5, 20, 100]
 ALPHA = ('a'..'z').to_a
 
@@ -13,7 +14,7 @@ benchmark_lambda = lambda do |x|
     TIMES.each do |j|
       string_to_append = Array.new(j) { ALPHA.sample }.join
 
-      x.report("interpolation - #{i} + #{j} = #{i + j}") do # this is the fastest in almost all cases at all sizes
+      x.report("interpolation - #{i} + #{j} = #{i + j}") do # not a clear all-around winner: `<<` wins when both strings are short (5+5, 20+5, 20+20, 100+20), interpolation wins when the appended string is large relative to the base -- including at 100+100, confirmed at benchmark-ips defaults; `join` is consistently slowest
         "#{base_string}/#{string_to_append}"
       end
 

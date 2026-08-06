@@ -3,6 +3,7 @@ require 'benchmark'
 # Make sure you `gem install benchmark-ips`
 require 'benchmark/ips'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: "pipe is always faster" no longer holds -- (one + two).uniq wins at 1000+ items. CONFIRMED at benchmark-ips defaults (2s/5s) -- real reversal, not a timing artifact.
 TIMES = [4, 16, 100, 1_000, 10_000]
 OVERLAP_FRACTIONS = [6, 5, 4]
 
@@ -16,12 +17,12 @@ benchmark_lambda = lambda do |x|
       first_part = (1..(half_point + overlap_offset)).to_a
       last_part = ((half_point - overlap_offset + 1)..items).to_a
 
-      # Pipe is always faster
+      # Pipe wins up to ~100 items
       x.report("#{items} items overlap #{overlap_denominator} :: one | two") do
         first_part | last_part
       end
 
-      x.report("#{items} items overlap #{overlap_denominator} :: (one + two).uniq") do
+      x.report("#{items} items overlap #{overlap_denominator} :: (one + two).uniq") do # wins at 1000+ items (crossover between 100 and 1000)
         (first_part + last_part).uniq
       end
     end

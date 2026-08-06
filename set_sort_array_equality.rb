@@ -4,11 +4,12 @@ require 'benchmark'
 require 'benchmark/ips'
 require 'set'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: Array#sort#== and Set#== are now roughly tied (previously Array#sort#== was faster). CONFIRMED same-ish at benchmark-ips defaults (2s/5s) too.
 benchmark_lambda = lambda do |x|
   array = [2, 1, 3, 4]
   set = Set.new([1, 2, 4, 3])
 
-  x.report("Array#sort#==") do # faster
+  x.report("Array#sort#==") do # roughly tied with Set#== now (previously faster)
     array.sort == [2, 1, 4, 3].sort
   end
 

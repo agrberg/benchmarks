@@ -4,6 +4,7 @@ require 'benchmark'
 require 'benchmark/ips'
 require 'date'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: ranking holds (cover? fastest, manual close behind, include? still catastrophically slower); exact slowdown factors shifted slightly (now ~23845x / ~47901x vs the figures below)
 min_date = Date.parse('Jan 1, 2000')
 max_date = Date.parse('Jan 1, 2050')
 range = min_date..max_date

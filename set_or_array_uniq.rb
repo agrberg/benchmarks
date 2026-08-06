@@ -4,6 +4,7 @@ require 'benchmark'
 require 'benchmark/ips'
 require 'set'
 
+# Re-run 2026-08-06 — Ruby 4.0.6 (no YJIT), ActiveSupport 8.1.3.1, benchmark-ips 2.15.1: Array/Set now same-ish (previously Array was faster by .09x) — correctness still unverified. CONFIRMED same-ish at benchmark-ips defaults (2s/5s) too.
 ENUM_SIZES = [4, 16, 100, 1_000]
 ENUM_COUNTS = [2, 4, 8, 16, 100]
 
@@ -30,7 +31,7 @@ benchmark_lambda = lambda do |x|
   set1 << rand(1..(size * 2)) until set1.size == size
   set2 << rand(1..(size * 2)) until set2.size == size
 
-  x.report("Array") do # Faster by .09x but I didn't verify the correctness of the benchmark
+  x.report("Array") do # Now same-ish vs Set (was faster by .09x previously) — still haven't verified correctness of the benchmark
     (array1 + array2).sort.uniq
   end
 
